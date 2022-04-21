@@ -123,11 +123,10 @@ function calcBoardValues(board){
     return -totalValue
 }
 
-export function calcBestMove(fen, index){
-    
+function root(fen, index){
     var game = Chess(fen)
     
-    if(index === 3){
+    if(index === 1){
         var movieValues = []
         game.moves().forEach(move => {
             game.move(move)
@@ -139,24 +138,33 @@ export function calcBestMove(fen, index){
 
     const possibles = game.moves()
 
-    var values = []
+    let values = []
 
     possibles.forEach( move => {
         game.move(move)
         if(game.in_checkmate()){
             values.push( game.turn() === 'w' ? 99999 : -99999 )
         }else{
-            values.push(calcBestMove(game.fen(), index + 1))
+            values.push(root(game.fen(), index - 1))
         }
         game.load(fen)
     })
 
+    return bestMove(values, game.turn()).value
+}
 
-    if(index === 1){
-        return bestMove(values, true).index
-    }else{
-        return bestMove(values, game.turn()).value
-    }
+export function calcBestMove(fen, index){
+    const game = Chess(fen)
+    const moves = game.moves()
+    let values = []
+
+    moves.forEach( move => {
+        game.move(move)
+        values.push(root(game.fen(), index - 1))
+        game.load(fen)
+    })
+
+    return bestMove(values, game.turn()).index
 }
 
 function bestMove(moves, turn) {

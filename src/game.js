@@ -25,7 +25,7 @@ export const game = () => {
     // game over
     if (possibleMoves.length === 0) return
 
-    var move = calcBestMove(game.fen(), 1)
+    var move = calcBestMove(game.fen(), 3)
 
     game.move(possibleMoves[move])
     board.position(game.fen())
@@ -103,7 +103,7 @@ export const game = () => {
   
     // checkmate?
     if (game.in_checkmate()) {
-      status = 'Fim de jogo, as' + moveColor + ' então em xeque-mate.'
+      status = 'Fim de jogo, as ' + moveColor + ' então em xeque-mate.'
     }
   
     // draw?
